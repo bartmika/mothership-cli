@@ -26,18 +26,18 @@ var (
 
 func init() {
 	// The following are required.
-	selectCmd.Flags().StringVarP(&metric, "metric", "m", "", "The metric to filter by")
-	selectCmd.MarkFlagRequired("metric")
-	selectCmd.Flags().Int64VarP(&start, "start", "s", 0, "The start timestamp to begin our range")
-	selectCmd.MarkFlagRequired("start")
-	selectCmd.Flags().Int64VarP(&end, "end", "e", 0, "The end timestamp to finish our range")
-	selectCmd.MarkFlagRequired("end")
+	selectBulkCmd.Flags().StringVarP(&metric, "metric", "m", "", "The metric to filter by")
+	selectBulkCmd.MarkFlagRequired("metric")
+	selectBulkCmd.Flags().Int64VarP(&start, "start", "s", 0, "The start timestamp to begin our range")
+	selectBulkCmd.MarkFlagRequired("start")
+	selectBulkCmd.Flags().Int64VarP(&end, "end", "e", 0, "The end timestamp to finish our range")
+	selectBulkCmd.MarkFlagRequired("end")
 
 	// The following are optional and will have defaults placed when missing.
-	selectCmd.Flags().IntVarP(&port, "port", "p", 50051, "The port of our server.")
-	selectCmd.Flags().StringVarP(&iAccessToken, "access_token", "a", os.Getenv("MOTHERSHIP_CLI_ACCESS_TOKEN"), "The JWT access token for your account. Leave blank to access environment variable.")
-	selectCmd.Flags().StringVarP(&iRefreshToken, "refresh_token", "b", os.Getenv("MOTHERSHIP_CLI_REFRESH_TOKEN"), "The JWT refresh token for your account. Leave blank to access environment variable.")
-	rootCmd.AddCommand(selectCmd)
+	selectBulkCmd.Flags().IntVarP(&port, "port", "p", 50051, "The port of our server.")
+	selectBulkCmd.Flags().StringVarP(&iAccessToken, "access_token", "a", os.Getenv("MOTHERSHIP_CLI_ACCESS_TOKEN"), "The JWT access token for your account. Leave blank to access environment variable.")
+	selectBulkCmd.Flags().StringVarP(&iRefreshToken, "refresh_token", "b", os.Getenv("MOTHERSHIP_CLI_REFRESH_TOKEN"), "The JWT refresh token for your account. Leave blank to access environment variable.")
+	rootCmd.AddCommand(selectBulkCmd)
 }
 
 func doSelectRow() {
@@ -83,7 +83,7 @@ func doSelectRow() {
 	labels = append(labels, &pb.Label{Name: "Source", Value: "Command"})
 
 	// Perform our gRPC request.
-	res, err := client.SelectTimeSeriesData(ctx, &pb.FilterReq{
+	res, err := client.SelectBulkTimeSeriesData(ctx, &pb.FilterReq{
 		Labels: labels,
 		Metric: metric,
 		Start: sts,
@@ -99,7 +99,7 @@ func doSelectRow() {
 	fmt.Println(res)
 }
 
-var selectCmd = &cobra.Command{
+var selectBulkCmd = &cobra.Command{
 	Use:   "select",
 	Short: "List time-series data",
 	Long:  `Connect to the gRPC server and return list of time-series data results based on a selection filter.`,

@@ -76,10 +76,10 @@ func doInsertBulkRow() {
     datum := &pb.TimeSeriesDatumReq{Labels: labels, Metric: metric, Value: value, Timestamp: ts}
 	arr := []*pb.TimeSeriesDatumReq{}
 	arr = append(arr, datum)
-	data := &pb.TimeSeriesDataListReq{Data: arr,}
+	data := &pb.BulkTimeSeriesDataReq{Data: arr,}
 
 	// Perform our gRPC request.
-	_, err = client.InsertTimeSeriesData(ctx, data)
+	_, err = client.InsertBulkTimeSeriesData(ctx, data)
 	if err != nil {
 		log.Fatalf("could not add: %v", err)
 	}
